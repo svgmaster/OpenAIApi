@@ -256,20 +256,6 @@ Client::downloadFile( std::string fileId )
 }
 
 json
-Client::listEngines()
-{
-	std::string url = getOpenAIUrl(OpenAIEndpoint::ListEngines);
-
-	std::string payload = "";
-	std::string type = "GET";
-
-	m_httpCode = sendRequest(url, type, reinterpret_cast<const char*>(payload.c_str()), 
-		payload.length(), m_apikey, m_orgkey);
-
-	return stringToJson(m_responseBody);
-}
-
-json
 Client::listFiles()
 {
 	std::string url = getOpenAIUrl(OpenAIEndpoint::ListFiles);
