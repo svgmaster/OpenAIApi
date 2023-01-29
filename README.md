@@ -76,17 +76,15 @@ int main()
     /* optional specify which organization is used for an API request */
     std::string orgId = getenv("OPENAI_ORG_ID"); 
 	
-    Client* client = new Client( apiKey, orgId );
+    Client client = Client( apiKey, orgId );
     
-    std::string response = client->createCompletion({
+    std::string response = client.createCompletion({
         {"model", "text-davinci-002"},
         {"prompt" , "Say this is an example"},
         {"temperature", 0},
         {"max_tokens", 10}
         })
-        ["choices"][0]["text"];
-		
-	delete client; // always free up memory :)	
+        ["choices"][0]["text"];	
 		
 	std::cout << response << std::endl;
 	
@@ -105,13 +103,11 @@ API requests can potentially return errors due to invalid inputs or other issues
 ```cpp
 try 
 {
-    Client* client = new Client( apiKey, orgId );
+    Client* client = new Client( "OPENAI_API_KEY" );
     
     std::string response = client->createCompletion({
-        {"model", "text-davinci-002"},
+        {"model", "text-davinci-008"}, // throw error: this model does not exist
         {"prompt" , "Say this is an example"},
-        {"temperature", 0},
-        {"max_tokens", 10}
         })
         ["choices"][0]["text"];
 		
@@ -119,9 +115,9 @@ try
 		
 	std::cout << response << std::endl;
 }
-catch (std::runtime_error e) 
+catch (std::runtime_error error) 
 {
-    std::cout << e.what() << std::endl;
+    std::cout << error.what() << std::endl;
 }
 ```
 ## Contributing
