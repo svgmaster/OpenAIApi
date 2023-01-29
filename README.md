@@ -70,8 +70,11 @@ using namespace OpenAIApi;
 
 int main()
 { 
-    std::string apiKey = getenv("OPENAI_API_KEY"); // get API key for authentication
-    std::string orgId = getenv("OPENAI_ORG_ID"); // optional specify which organization is used for an API request
+    /* get API key for authentication */
+    std::string apiKey = getenv("OPENAI_API_KEY");
+    
+    /* optional specify which organization is used for an API request */
+    std::string orgId = getenv("OPENAI_ORG_ID"); 
 	
     Client* client = new Client( apiKey, orgId );
     
