@@ -78,7 +78,7 @@ enum class OpenAIEndpoint {
 	// Given a input text, outputs if the model classifies it as violating OpenAI's content policy.
 	Moderation,
 	// The Engines endpoints are deprecated.
-	ListEngines,
+	//ListEngines, 
 	// Set custom web url parameter
 	Custom
 };
