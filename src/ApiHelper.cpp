@@ -136,7 +136,13 @@ json
 stringToJson(std::string response) 
 {
 	if (json::accept(response)) {
-		return json::parse(response);
+		json j = json::parse(response);
+		if (j.contains("error")) {
+			/* if response contains error throw message */
+			throw std::runtime_error("Error: " + std::string(j["error"]["message"]));
+			return j;
+		}
+		return j;
 	}
 	return {};
 }
