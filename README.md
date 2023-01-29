@@ -58,7 +58,7 @@ The library needs to be configured with your account's secret key, which is avai
 
 **Important note: Don't expose your secret API key. [See here](https://beta.openai.com/docs/api-reference/authentication) for more details.**
 
-** When build your solution for Windows don't forget to add this library "Ws2_32.lib" "Wldap32.lib" "Crypt32.lib" to linker ** [See here](https://stackoverflow.com/questions/4176503/unresolved-symbols-when-linking-a-program-using-libcurl) for details.
+When build your solution for Windows don't forget to add this library "Ws2_32.lib" "Wldap32.lib" "Crypt32.lib" to linker [See here](https://stackoverflow.com/questions/4176503/unresolved-symbols-when-linking-a-program-using-libcurl) for details.
 
 ```cpp
 #include <iostream>
@@ -122,9 +122,9 @@ catch (std::runtime_error e)
 
 ## ChangeLog
 
-[ChangeLog]
+[ChangeLog]()
 
 ## Licence
-[The MIT License]
+[The MIT License]()
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
