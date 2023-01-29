@@ -1,5 +1,9 @@
 # Changelog
 
+## Last Changes:
+
+- Remove Engines support ( The Engines endpoints are deprecated. )
+
 ## v0.2.8
 
 - Official release of Library
