@@ -147,6 +147,6 @@ Last version is v0.2.8
 
 ## License
 
-Distributed under the MIT License. See [`LICENSE`](LICENSE.md) for more information.
+Distributed under the MIT License. See [`LICENSE`](LICENSE) for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
