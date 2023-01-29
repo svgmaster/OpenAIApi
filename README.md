@@ -69,9 +69,9 @@ When build your solution for Windows don't forget to add this library "Ws2_32.li
 using namespace OpenAIApi;
 
 int main()
-{
-	std::string apiKey = getenv("OPENAI_API_KEY"); // get API key for authentication
-	std::string orgId = getenv("OPENAI_ORG_ID"); // optional specify which organization is used for an API request
+{ 
+    std::string apiKey = getenv("OPENAI_API_KEY"); // get API key for authentication
+    std::string orgId = getenv("OPENAI_ORG_ID"); // optional specify which organization is used for an API request
 	
     Client* client = new Client( apiKey, orgId );
     
