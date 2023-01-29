@@ -183,10 +183,10 @@ namespace OpenAIApi {
 		/**
 		* Lists the currently available (non-finetuned) models, and provides basic information about each one such as the owner and availability..
 		*
-		*
+		* The Engines endpoints are deprecated.
 		*/
-		json
-		listEngines();
+		//json
+		//listEngines();
 
 		/**
 		* Returns a list of files that belong to the user's organization..
