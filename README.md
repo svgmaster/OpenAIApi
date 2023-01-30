@@ -11,7 +11,7 @@ Build tools and Libraries:
 - [CMake](https://cmake.org/download/) (optional if you want to build on Linux or MacOS)
 - [Visual Studio Community 2022](https://visualstudio.microsoft.com/downloads/) (for Windnows Only you can build with solution file)
 - [vcpkg](https://github.com/microsoft/vcpkg)
-- [OpenSSL](https://www.openssl.org/source/) (this is need to build libcurl, because for endpoits using https protocol)
+- [OpenSSL](https://www.openssl.org/source/) (this is need to build libcurl, because for endpoint using https protocol)
 - [Libcurl](https://curl.se/download.html)
 - [nlohmann/json](https://github.com/nlohmann/json) JSON libraries, integrated in project don't need to download
 
@@ -106,7 +106,7 @@ try
     Client* client = new Client( "OPENAI_API_KEY" );
     
     std::string response = client->createCompletion({
-        {"model", "text-davinci-008"}, // throw error: this model does not exist
+        {"model", "text-davinci-008"}, // throw error: this model does not exists
         {"prompt" , "Say this is an example"},
         })
         ["choices"][0]["text"];
