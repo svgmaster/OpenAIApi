@@ -33,7 +33,7 @@
 #include <string> /* std::string */
 
 /* Define when libcurl is build with static library */
-//#define CURL_STATICLIB
+#define CURL_STATICLIB
 #include <curl/curl.h>
 
 #include <nlohmann/json.hpp>
