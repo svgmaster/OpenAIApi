@@ -27,8 +27,14 @@
 \**************************************************************************************/
 
 
-#include <stdexcept>
+/*
+ * OpenAIException.h
+ *
+ * This is the exception being thrown in case the api call was not successful
+ */
+
 #include <string>
+#include <stdexcept> /* we use std::exception */
 
 class  OpenAIException
     : public std::exception
