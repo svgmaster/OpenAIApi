@@ -35,6 +35,9 @@
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
 
+/* Error Handler */
+#include  "OpenAIException.h"
+
 namespace OpenAIApi {
 
 	/**
