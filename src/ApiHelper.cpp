@@ -1,32 +1,34 @@
 /**************************************************************************************\
-*								         	       *
-*   	MIT License								       *
-*										       *
-*   	Community-maintained OpenAI API Library for modern C++			       *
-*										       *
-*   	Copyright (c) 2023 Stanislav Gadzhov					       *
-*								      		       *
-*   	Permission is hereby granted, free of charge, to any person obtaining a copy   *
-*	of this software and associated documentation files (the "Software"), to deal  *
-*	in the Software without restriction, including without limitation the rights   *
-*	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell      *
-*	copies of the Software, and to permit persons to whom the Software is	       *
-*	furnished to do so, subject to the following conditions:		       *
-*										       *
-*	The above copyright notice and this permission notice shall be included in all *
-*	copies or substantial portions of the Software.				       *
-*								 		       *
-*	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR     *
-*	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,       *
-*	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE    *
-*	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER	       *
-*	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,  *
-*	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE  *
-*	SOFTWARE.								       *
-*										       *
+*								         	       
+*   MIT License								       
+*										       
+*   Community-maintained OpenAI API Library for modern C++			       
+*										       
+*   Copyright (c) 2023 Stanislav Gadzhov					       
+*								      		       
+*   Permission is hereby granted, free of charge, to any person obtaining a copy   
+*	of this software and associated documentation files (the "Software"), to deal  
+*	in the Software without restriction, including without limitation the rights   
+*	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell      
+*	copies of the Software, and to permit persons to whom the Software is	       
+*	furnished to do so, subject to the following conditions:		       
+*										       
+*	The above copyright notice and this permission notice shall be included in all 
+*	copies or substantial portions of the Software.				       
+*								 		       
+*	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR     
+*	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,       
+*	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE    
+*	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER	       
+*	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,  
+*	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE  
+*	SOFTWARE.								       
+*										       
 \**************************************************************************************/
 
 #include <iostream>
+
+#include <OpenAIApi/Client.h> /* OpenAIException */
 
 #include "ApiHelper.h"
 
@@ -105,12 +107,6 @@ sendRequest(std::string& url,		/* Valid Url Address */
 		
 		CURLcode res = curl_easy_perform(curl);
 
-		if (res != CURLE_OK) {
-			throw std::runtime_error("Error: " + std::string(curl_easy_strerror(res)));
-			m_responseBody = "";
-			return 	1;
-		}
-
 		long response_code;
 		curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response_code);
 
@@ -118,6 +114,32 @@ sendRequest(std::string& url,		/* Valid Url Address */
 		curl_easy_cleanup(curl);
 		curl_mime_free(mime);
 		m_formMap.clear();
+
+		if (res != CURLE_OK) {
+
+			throw OpenAIException(response_code, std::string(curl_easy_strerror(res)));
+			
+			m_responseBody = "";
+			return 	response_code;
+		}
+
+		if (response_code > 200) {
+			std::string message = std::string(curl_easy_strerror(res));
+
+			if (json::accept(response)) {
+				json j = json::parse(response);
+
+				if (j.contains("error")) {
+					message = "Error " + std::to_string(response_code) + ": " + std::string(j["error"]["message"]);
+				}
+
+				m_responseBody = response;
+			}
+				
+			throw OpenAIException(response_code, message);
+			
+			return response_code;
+		}
 
 		m_responseBody = response;
 
@@ -136,13 +158,7 @@ json
 stringToJson(std::string response) 
 {
 	if (json::accept(response)) {
-		json j = json::parse(response);
-		if (j.contains("error")) {
-			/* if response contains error throw message */
-			throw std::runtime_error("Error: " + std::string(j["error"]["message"]));
-			return j;
-		}
-		return j;
+		return json::parse(response);
 	}
 	return {};
 }
