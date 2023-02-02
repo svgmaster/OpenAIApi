@@ -3,6 +3,7 @@
 ## Last Changes:
 
 - Remove Engines support ( The Engines endpoints are deprecated. )
+- Remove unnecessary options in CMakeList.txt
 
 ## v0.2.8
 
