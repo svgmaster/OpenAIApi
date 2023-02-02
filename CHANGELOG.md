@@ -4,6 +4,7 @@
 
 - Remove Engines support ( The Engines endpoints are deprecated. )
 - Remove unnecessary options in CMakeList.txt
+- Add class OpenAIException
 
 ## v0.2.8
 
