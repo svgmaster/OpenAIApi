@@ -17,13 +17,10 @@ set(CMAKE_PROJECT_NAME ${PROJECT_NAME})
 
 enable_language(CXX)
 
-add_compile_options(-g -Wall)
-add_link_options(-O0)
-
 if(WIN32)
 add_definitions("-DWIN32")
 add_definitions("-DCURL_WIN32")
-add_link_options(-O0 "Ws2_32.lib" "Wldap32.lib" "Crypt32.lib")
+add_link_options("Ws2_32.lib" "Wldap32.lib" "Crypt32.lib")
 endif()
 
 set(OPENAIAPI_VERSION 0.2.8)
