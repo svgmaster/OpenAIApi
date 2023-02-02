@@ -54,9 +54,9 @@ int main()
 
         return 0;
 
-    } catch ( std::runtime_error e ) {
+    } catch ( OpenAIException error ) {
 
-        std::cout << e.what() << std::endl;
+        std::cout << error.getMessage() << std::endl;
 
         return 1;
     }
