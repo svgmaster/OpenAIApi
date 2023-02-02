@@ -12,8 +12,6 @@ add_link_options("Ws2_32.lib" "Wldap32.lib" "Crypt32.lib")
 endif()
 
 add_definitions("-D_CONSOLE")
-add_compile_options(-g -Wall)
-add_link_options(-O0)
 
 set(src Examples.cpp)
 
