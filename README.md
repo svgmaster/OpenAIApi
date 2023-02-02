@@ -114,9 +114,9 @@ try
 		
 	std::cout << response << std::endl;
 }
-catch (std::runtime_error error) 
+catch ( OpenAIException error )
 {
-    std::cout << error.what() << std::endl;
+    std::cout << error.getMessage() << std::endl;
 }
 ```
 ## Contributing
