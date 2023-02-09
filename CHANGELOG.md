@@ -2,6 +2,8 @@
 
 ## Last Changes:
 
+## v0.2.9
+
 - Remove Engines support ( The Engines endpoints are deprecated. )
 - Remove unnecessary options in CMakeList.txt
 - Add class OpenAIException
