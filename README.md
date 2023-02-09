@@ -136,7 +136,7 @@ See the [open issues](https://github.com/svgmaster/OpenAIApi/issues) for a full 
 
 ## ChangeLog
 
-Last version is v0.2.8
+Last version is v0.2.9
 
 [ChangeLog](CHANGELOG.md)
 
