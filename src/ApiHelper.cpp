@@ -123,7 +123,12 @@ sendRequest(std::string& url,		/* Valid Url Address */
 			return 	response_code;
 		}
 
-		if (response_code > 200) {
+		// 1xx - informational : OK
+        	// 2xx - successful    : OK
+        	// 3xx - redirection   : OK
+        	// 4xx - client error  : not OK
+        	// 5xx - client error  : not OK
+		if (response_code > 399) {
 			std::string message = std::string(curl_easy_strerror(res));
 
 			if (json::accept(response)) {
