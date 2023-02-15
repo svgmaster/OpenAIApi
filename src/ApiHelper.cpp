@@ -45,14 +45,14 @@ _write_buf(char* ptr, size_t size, size_t nmemb, void* buffer)
 }
 
 int 
-sendRequest(std::string& url,		/* Valid Url Address */
-			std::string& type,		/* HTTP Request Type */
-			const char* payload,	/* JSON Payload */
-			size_t length,			/* JSON String lenght */
-			std::string& api_key,	/* API Key */
-			std::string& org_key,   /* Organization Key */
-			std::string content_type,
-			bool post_form)
+sendRequest(	std::string& url,	/* Valid Url Address */
+		std::string& type,	/* HTTP Request Type */
+		const char* payload,	/* JSON Payload */
+		size_t length,		/* JSON String lenght */
+		std::string& api_key,	/* API Key */
+		std::string& org_key,   /* Organization Key */
+		std::string content_type,
+		bool post_form)
 {
 	CURL* curl = curl_easy_init();
 
