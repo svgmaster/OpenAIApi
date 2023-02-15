@@ -78,9 +78,6 @@ sendRequest(std::string& url,		/* Valid Url Address */
 		if (post_form == true) {
 
 			for (auto& val : m_formMap) {	
-				std::cout << val.first.c_str() << std::endl;
-				std::cout << val.second.c_str() << std::endl;
-
 				part = curl_mime_addpart(mime);
 				curl_mime_name(part, val.first.c_str());
 				if(val.first != "file" || "image" || "mask")
