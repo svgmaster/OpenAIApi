@@ -2,12 +2,15 @@
 
 ## Last Changes:
 
--	Change Error Codes:	
-	   1xx - informational : OK
-     2xx - successful    : OK
-     3xx - redirection   : OK
-     4xx - client error  : not OK
-     5xx - client error  : not OK
+- Change Error Codes:	
+	1xx - informational : OK
+	2xx - successful    : OK
+	3xx - redirection   : OK
+	4xx - client error  : not OK
+	5xx - client error  : not OK
+	
+- Remove unnecessary std::cout from ApiHelper.cpp
+     
 
 ## v0.2.9
 
