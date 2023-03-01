@@ -48,6 +48,7 @@ Client::Client(std::string apiKey, std::string organizationKey)
 Client::~Client()
 {
 	delete api;
+	api = nullptr;
 }
 
 std::future< Response< json >>
