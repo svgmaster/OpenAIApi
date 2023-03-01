@@ -2,6 +2,17 @@
 
 ## Last Changes:
 
+- Change example with std::future response
+
+## v0.3.1
+
+- Add Response class
+- Add struct ServerResponse contain server data response
+- Add std::future return type for asynchronously support
+- Change ApiHelper to class with async support
+
+## v0.3.0:
+
 - Change Error Codes:	
 	1xx - informational : OK
 	2xx - successful    : OK
