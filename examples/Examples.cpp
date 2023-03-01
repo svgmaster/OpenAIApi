@@ -45,7 +45,7 @@ int main()
             {"prompt" , "Somebody once told me the world is gonna roll me"},
             {"temperature", 0},
             {"max_tokens", 10}
-            })
+            }).get().Model() // call function asynchronously 
             ["choices"][0]["text"];
 
         delete client; // free up memory
