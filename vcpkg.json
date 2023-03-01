@@ -1,6 +1,6 @@
 {
   "name": "libOpenAIApi",
-  "version-string": "0.2.8",
+  "version-string": "0.3.1",
   "description": "This is Community-maintained OpenAI API Library for modern C++, provides access to the OpenAI API to implementing in C++ applications.",
   "dependencies": [
     "openssl",
