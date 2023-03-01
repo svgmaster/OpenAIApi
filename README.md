@@ -61,6 +61,8 @@ To use the library needs to be configured with your account's secret key, which 
 
 When build your solution for Windows don't forget to add this library "Ws2_32.lib" "Wldap32.lib" "Crypt32.lib" to linker [See here](https://stackoverflow.com/questions/4176503/unresolved-symbols-when-linking-a-program-using-libcurl) for details.
 
+In this example ( and library ) we use std:future, for more information [See here](https://cplusplus.com/reference/future/future/)
+
 ```cpp
 #include <iostream>
 
@@ -82,7 +84,7 @@ int main()
         {"prompt" , "Say this is an example"},
         {"temperature", 0},
         {"max_tokens", 10}
-        })
+        }).get().Model() // call function asynchronously 
         ["choices"][0]["text"];	
 		
 	std::cout << response << std::endl;
@@ -107,7 +109,7 @@ try
     std::string response = client->createCompletion({
         {"model", "text-davinci-008"}, // throw error: this model does not exists
         {"prompt" , "Say this is an example"},
-        })
+        }).get().Model() // call function asynchronously 
         ["choices"][0]["text"];
 		
 	delete client; // always free up memory :)	
@@ -136,7 +138,7 @@ See the [open issues](https://github.com/svgmaster/OpenAIApi/issues) for a full 
 
 ## ChangeLog
 
-Last version is v0.2.9
+Last version is v0.3.0
 
 [ChangeLog](CHANGELOG.md)
 
