@@ -32,33 +32,39 @@
 
 #include "ApiHelper.h"
 
-std::map<std::string, std::string> m_formMap = {};
-std::string m_responseBody = {};
-int m_httpCode = 1;
+using namespace OpenAIApi;
+
+ApiHelper::ApiHelper( std::string apiKey, std::string organizationKey )
+{
+	if (apiKey.empty())
+		throw OpenAIException(401,"Incorrect API key provided");
+
+	if (!organizationKey.empty())
+		m_orgId = organizationKey;
+
+	m_apiKey = apiKey;
+	m_formMap = {};
+	m_httpCode = 1;
+	m_responseBody = {};
+}
 
 size_t 
-_write_buf(char* ptr, size_t size, size_t nmemb, void* buffer) 
+_write_buf(char* ptr, size_t size, size_t nmemb, void* buffer)
 {
-	std::string* response = (std::string*)buffer;
+	std::string* response = reinterpret_cast<std::string*>(buffer);
 	response->append(ptr, size * nmemb);
 	return size * nmemb;
 }
 
 int 
-sendRequest(	std::string& url,	/* Valid Url Address */
-		std::string& type,	/* HTTP Request Type */
-		const char* payload,	/* JSON Payload */
-		size_t length,		/* JSON String lenght */
-		std::string& api_key,	/* API Key */
-		std::string& org_key,   /* Organization Key */
-		std::string content_type,
-		bool post_form)
+ApiHelper::request(std::string& url,	/* Valid Url Address */
+			std::string& type,			/* HTTP Request Type */
+			std::string content_type)
 {
 	CURL* curl = curl_easy_init();
 
-	std::string response;
-
 	if (curl) {
+
 		/* Build an HTTP form */
 		curl_mime* mime = curl_mime_init(curl);
 		curl_mimepart* part = curl_mime_addpart(mime);
@@ -68,22 +74,26 @@ sendRequest(	std::string& url,	/* Valid Url Address */
 		curl_slist* headers = nullptr;
 		headers = curl_slist_append(headers, content_type.c_str());
 		
-		if (api_key != "")
-			headers = curl_slist_append(headers, ("Authorization: Bearer " + api_key).c_str());
-		if (org_key != "")
-			headers = curl_slist_append(headers, ("OpenAI-Organization: " + org_key).c_str());
+		if (!m_apiKey.empty())
+			headers = curl_slist_append(headers, ("Authorization: Bearer " + m_apiKey).c_str());
+
+		if (!m_orgId.empty())
+			headers = curl_slist_append(headers, ("OpenAI-Organization: " + m_orgId).c_str());
 
 		curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
 
-		if (post_form == true) {
+		if (is_formRequest == true) {
 
 			for (auto& val : m_formMap) {	
+
 				part = curl_mime_addpart(mime);
 				curl_mime_name(part, val.first.c_str());
+
 				if(val.first != "file" || "image" || "mask")
 					curl_mime_data(part, val.second.c_str(), CURL_ZERO_TERMINATED);
 				else
 					curl_mime_filedata(part, val.second.c_str());
+
 			}
 
 			/* Set the form info */
@@ -91,76 +101,102 @@ sendRequest(	std::string& url,	/* Valid Url Address */
 		}
 
 		if ((type == "POST" || type == "PUT" || type == "DELETE") 
-			&& post_form == false) {
+			&& is_formRequest == false && is_JsonRequest == true) {
+
+			size_t length = m_payload.length();
+			const char* payload = m_payload.c_str();
 
 			if(length > 0)
 				curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, length);
 			if (payload != 0)
 				curl_easy_setopt(curl, CURLOPT_POSTFIELDS, payload);
+
 		}
 
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, _write_buf);
-		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &m_responseBody);
 		
 		CURLcode res = curl_easy_perform(curl);
 
-		long response_code;
-		curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response_code);
+		curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &m_httpCode);
 
 		/* Clean-up. */
 		curl_easy_cleanup(curl);
+
 		curl_mime_free(mime);
+
 		m_formMap.clear();
 
 		if (res != CURLE_OK) {
-
-			throw OpenAIException(response_code, std::string(curl_easy_strerror(res)));
+			throw OpenAIException(m_httpCode, std::string(curl_easy_strerror(res)));
 			
 			m_responseBody = "";
-			return 	response_code;
+
+			return 	m_httpCode;
 		}
 
 		// 1xx - informational : OK
-        	// 2xx - successful    : OK
-        	// 3xx - redirection   : OK
-        	// 4xx - client error  : not OK
-        	// 5xx - client error  : not OK
-		if (response_code > 399) {
+		// 2xx - successful    : OK
+		// 3xx - redirection   : OK
+		// 4xx - client error  : not OK
+		// 5xx - client error  : not OK
+		if (m_httpCode > 399) {
 			std::string message = std::string(curl_easy_strerror(res));
 
-			if (json::accept(response)) {
-				json j = json::parse(response);
+			if (json::accept(m_responseBody)) {
+				json j = json::parse(m_responseBody);
 
 				if (j.contains("error")) {
-					message = "Error " + std::to_string(response_code) + ": " + std::string(j["error"]["message"]);
+					message = "Error " + std::to_string(m_httpCode) + ": " + std::string(j["error"]["message"]);
 				}
 
-				m_responseBody = response;
 			}
 				
-			throw OpenAIException(response_code, message);
+			throw OpenAIException(m_httpCode, message);
 			
-			return response_code;
+			return m_httpCode;
 		}
 
-		m_responseBody = response;
-
-		return response_code;
+		return m_httpCode;
 	}
 	return 	1;
 }
 
 void 
-addFormParam(std::string key, std::string value)
+ApiHelper::addFormParam(std::string key, std::string value)
 {
+	is_formRequest = true;
+	is_JsonRequest = false;
 	m_formMap.insert({ key, value });
 }
 
 json 
-stringToJson(std::string response) 
+ApiHelper::stringToJson(std::string response)
 {
 	if (json::accept(response)) {
 		return json::parse(response);
 	}
 	return {};
+}
+
+void 
+ApiHelper::setJsonRequest(json jsonRequest) 
+{
+	is_formRequest = false;
+	is_JsonRequest = true;
+
+	std::stringstream ss;
+	ss << jsonRequest;
+
+	m_payload = ss.str();
+}
+
+//template<class T>
+std::future<Response<json>> ApiHelper::getResponse()
+{
+	return std::async(std::launch::async, [=]
+	{
+		ServerResponse res = { m_responseBody, m_httpCode };
+		return Response<json>(json::parse(m_responseBody), res);	
+	});
 }
