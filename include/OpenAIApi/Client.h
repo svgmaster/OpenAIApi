@@ -1,29 +1,29 @@
 /**************************************************************************************\
-*								         	       *
-*   	MIT License								       *
-*										       *
-*   	Community-maintained OpenAI API Library for modern C++			       *
-*										       *
-*   	Copyright (c) 2023 Stanislav Gadzhov					       *
-*								      		       *
-*   	Permission is hereby granted, free of charge, to any person obtaining a copy   *
-*	of this software and associated documentation files (the "Software"), to deal  *
-*	in the Software without restriction, including without limitation the rights   *
-*	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell      *
-*	copies of the Software, and to permit persons to whom the Software is	       *
-*	furnished to do so, subject to the following conditions:		       *
-*										       *
-*	The above copyright notice and this permission notice shall be included in all *
-*	copies or substantial portions of the Software.				       *
-*								 		       *
-*	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR     *
-*	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,       *
-*	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE    *
-*	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER	       *
-*	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,  *
-*	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE  *
-*	SOFTWARE.								       *
-*										       *
+*								         	       
+*   MIT License								       
+*										       
+*   Community-maintained OpenAI API Library for modern C++			       
+*										       
+*   Copyright (c) 2023 Stanislav Gadzhov					       
+*								      		       
+*   Permission is hereby granted, free of charge, to any person obtaining a copy   
+*	of this software and associated documentation files (the "Software"), to deal  
+*	in the Software without restriction, including without limitation the rights   
+*	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell      
+*	copies of the Software, and to permit persons to whom the Software is	       
+*	furnished to do so, subject to the following conditions:		       
+*										       
+*	The above copyright notice and this permission notice shall be included in all 
+*	copies or substantial portions of the Software.				       
+*								 		       
+*	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR     
+*	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,       
+*	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE    
+*	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER	      
+*	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,  
+*	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE  
+*	SOFTWARE.								       
+*										       
 \**************************************************************************************/
 
 #ifndef OPENAIAPI_CLIENT_H
@@ -31,12 +31,17 @@
 
 #include <list>
 #include <string>
+#include <future>
 
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
 
 /* Error Handler */
 #include  "OpenAIException.h"
+
+/* Response class */
+#include  "Response.h"
+
 
 namespace OpenAIApi {
 
@@ -47,12 +52,9 @@ namespace OpenAIApi {
 	class Client {
 
 	public:
-		Client( std::string apiKey, std::string organizationKey = std::string() ) 
-		{
-			m_apikey = apiKey, m_orgkey = organizationKey;
-		};
+		Client( std::string apiKey, std::string organizationKey = std::string() );
 
-		virtual ~Client() = default;
+		virtual ~Client();
 
 		/**
 		* Immediately cancel a fine-tune job. .
@@ -60,7 +62,7 @@ namespace OpenAIApi {
 		*
 		* \param fineTuneId The ID of the fine-tune job to cancel  *Required*
 		*/
-		json
+		std::future< Response< json >>
 		cancelFineTune( std::string fineTuneId );
 
 		/**
@@ -69,7 +71,7 @@ namespace OpenAIApi {
 		*
 		* \param createCompletionRequest  *Required*
 		*/
-		json
+		std::future< Response< json >>
 		createCompletion( json jsonRequest );
 
 		/**
@@ -78,7 +80,7 @@ namespace OpenAIApi {
 		*
 		* \param createEditRequest  *Required*
 		*/
-		json
+		std::future< Response< json >>
 		createEdit( json jsonRequest );
 
 		/**
@@ -87,17 +89,17 @@ namespace OpenAIApi {
 		*
 		* \param createEmbeddingRequest  *Required*
 		*/
-		json
+		std::future< Response< json >>
 		createEmbedding( json jsonRequest );
 
 		/**
 		* Upload a file that contains document(s) to be used across various endpoints/features. Currently, the size of all the files uploaded by one organization can be up to 1 GB. Please contact us if you need to increase the storage limit. .
 		*
 		*
-		* \param file Name of the [JSON Lines](https://jsonlines.readthedocs.io/en/latest/) file to be uploaded.  If the `purpose` is set to \\\"fine-tune\\\", each line is a JSON record with \\\"prompt\\\" and \\\"completion\\\" fields representing your [training examples](/docs/guides/fine-tuning/prepare-training-data).  *Required*
+		* \param file Name of the [JSON Lines](https://std::future< Response< json >>lines.readthedocs.io/en/latest/) file to be uploaded.  If the `purpose` is set to \\\"fine-tune\\\", each line is a JSON record with \\\"prompt\\\" and \\\"completion\\\" fields representing your [training examples](/docs/guides/fine-tuning/prepare-training-data).  *Required*
 		* \param purpose The intended purpose of the uploaded documents.  Use \\\"fine-tune\\\" for [Fine-tuning](/docs/api-reference/fine-tunes). This allows us to validate the format of the uploaded file.  *Required*
 		*/
-		json
+		std::future< Response< json >>
 		createFile( std::string file, std::string purpose );
 
 		/**
@@ -106,7 +108,7 @@ namespace OpenAIApi {
 		*
 		* \param createFineTuneRequest  *Required*
 		*/
-		json
+		std::future< Response< json >>
 		createFineTune( json jsonRequest );
 
 		/**
@@ -115,7 +117,7 @@ namespace OpenAIApi {
 		*
 		* \param createImageRequest  *Required*
 		*/
-		json
+		std::future< Response< json >>
 		createImage( json jsonRequest );
 
 		/**
@@ -127,10 +129,10 @@ namespace OpenAIApi {
 		* \param mask An additional image whose fully transparent areas (e.g. where alpha is zero) indicate where `image` should be edited. Must be a valid PNG file, less than 4MB, and have the same dimensions as `image`.
 		* \param n The number of images to generate. Must be between 1 and 10.
 		* \param size The size of the generated images. Must be one of `256x256`, `512x512`, or `1024x1024`.
-		* \param responseFormat The format in which the generated images are returned. Must be one of `url` or `b64_json`.
+		* \param responseFormat The format in which the generated images are returned. Must be one of `url` or `b64_std::future< Response< json >>`.
 		* \param user A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse. [Learn more](/docs/guides/safety-best-practices/end-user-ids).
 		*/
-		json
+		std::future< Response< json >>
 		createImageEdit( std::string image, std::string prompt, std::string mask, int n, std::string size, 
 			std::string responseFormat, std::string user );
 
@@ -141,10 +143,10 @@ namespace OpenAIApi {
 		* \param image The image to use as the basis for the variation(s). Must be a valid PNG file, less than 4MB, and square. *Required*
 		* \param n The number of images to generate. Must be between 1 and 10.
 		* \param size The size of the generated images. Must be one of `256x256`, `512x512`, or `1024x1024`.
-		* \param responseFormat The format in which the generated images are returned. Must be one of `url` or `b64_json`.
+		* \param responseFormat The format in which the generated images are returned. Must be one of `url` or `b64_std::future< Response< json >>`.
 		* \param user A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse. [Learn more](/docs/guides/safety-best-practices/end-user-ids).
 		*/
-		json
+		std::future< Response< json >>
 		createImageVariation( std::string image, int n, std::string size, std::string responseFormat, std::string user);
 
 		/**
@@ -153,7 +155,7 @@ namespace OpenAIApi {
 		*
 		* \param createModerationRequest  *Required*
 		*/
-		json
+		std::future< Response< json >>
 		createModeration( json jsonRequest );
 
 		/**
@@ -162,7 +164,7 @@ namespace OpenAIApi {
 		*
 		* \param fileId The ID of the file to use for this request *Required*
 		*/
-		json
+		std::future< Response< json >>
 		deleteFile( std::string fileId );
 
 		/**
@@ -171,7 +173,7 @@ namespace OpenAIApi {
 		*
 		* \param model The model to delete *Required*
 		*/
-		json
+		std::future< Response< json >>
 		deleteModel( std::string model );
 
 		/**
@@ -180,7 +182,7 @@ namespace OpenAIApi {
 		*
 		* \param fileId The ID of the file to use for this request *Required*
 		*/
-		json
+		std::future< Response< json >>
 		downloadFile( std::string fileId );
 		
 		/**
@@ -188,7 +190,7 @@ namespace OpenAIApi {
 		*
 		* The Engines endpoints are deprecated.
 		*/
-		//json
+		//std::future< Response< json >>
 		//listEngines();
 
 		/**
@@ -196,7 +198,7 @@ namespace OpenAIApi {
 		*
 		*
 		*/
-		json 
+		std::future< Response< json >> 
 		listFiles();
 
 		/**
@@ -206,7 +208,7 @@ namespace OpenAIApi {
 		* \param fineTuneId The ID of the fine-tune job to get events for.  *Required*
 		* \param stream Whether to stream events for the fine-tune job. If set to true, events will be sent as data-only [server-sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events#Event_stream_format) as they become available. The stream will terminate with a `data: [DONE]` message when the job is finished (succeeded, cancelled, or failed).  If set to false, only events generated so far will be returned.
 		*/
-		json
+		std::future< Response< json >>
 		listFineTuneEvents( std::string fineTuneId, bool stream );
 
 		/**
@@ -214,7 +216,7 @@ namespace OpenAIApi {
 		*
 		*
 		*/
-		json
+		std::future< Response< json >>
 		listFineTunes();
 
 		/**
@@ -222,7 +224,7 @@ namespace OpenAIApi {
 		*
 		*
 		*/
-		json
+		std::future< Response< json >>
 		listModels();
 
 		/**
@@ -231,7 +233,7 @@ namespace OpenAIApi {
 		*
 		* \param fileId The ID of the file to use for this request *Required*
 		*/
-		json
+		std::future< Response< json >>
 		retrieveFile( std::string fileId );
 
 		/**
@@ -240,7 +242,7 @@ namespace OpenAIApi {
 		*
 		* \param fineTuneId The ID of the fine-tune job  *Required*
 		*/
-		json
+		std::future< Response< json >>
 		retrieveFineTune( std::string fineTuneId );
 
 		/**
@@ -249,28 +251,13 @@ namespace OpenAIApi {
 		*
 		* \param model The ID of the model to use for this request *Required*
 		*/
-		json
+		std::future< Response< json >>
 		retrieveModel( std::string model );
-
-		/**
-		* Get string from response
-		*
-		*
-		* \return String object
-		*/
-		std::string getResponseBody();
-
-		/**
-		* Get HTTP response code from request
-		*
-		*
-		* \return HTTP Code
-		*/
-		int getResponseCode();
 
 	private:
 		std::string m_apikey;
 		std::string m_orgkey;
+
 	};
 
 }
